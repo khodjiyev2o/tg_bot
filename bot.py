@@ -8,7 +8,7 @@ load_dotenv()
 API_TOKEN = os.getenv("API_TOKEN")
 
 
-
+print(API_TOKEN)
 #Configure logging
 logging.basicConfig(level=logging.INFO)
 
