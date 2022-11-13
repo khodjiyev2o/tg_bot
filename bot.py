@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-API_TOKEN = os.getenv("API_TOKEN")
+API_TOKEN = '5690420387:AAGMgeFP02JzzbzdC2wAhItftS_Zn46B0YM'
 
 
 print(API_TOKEN)
