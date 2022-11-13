@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-API_TOKEN = '5690420387:AAGMgeFP02JzzbzdC2wAhItftS_Zn46B0YM'
+API_TOKEN = os.getenv("API_TOKEN")
 
 
 
@@ -19,22 +19,21 @@ dp = Dispatcher(bot)
 
 
 
-@dp.message_handler(commands=['start', 'help'])
+@dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    """
-    This handler will be called when user sends `/start` or `/help` command
-    """
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
+    await message.reply("Assalomu Aleykum, Ish Bor botimizga xush kelibsiz!")
 
 
+@dp.message_handler(commands=['help'])
+async def send_welcome(message: types.Message):
+    await message.reply("Bot buyicha savollarizngiz bo'lsa @khodjiyev2o ga murojaat qilishingiz mumkin!")
 
 
 @dp.message_handler()
 async def echo(message: types.Message):
-    # old style:
-    # await bot.send_message(message.chat.id, message.text)
-
     await message.answer(message.text)
+
+
 
 
 
