@@ -5,6 +5,10 @@ env = Env()
 env.read_env()
 
 # .env fayl ichidan quyidagilarni o'qiymiz
-BOT_TOKEN = env.str("PRODUCTION_API_TOKEN")  # Bot token
+BOT_TOKEN = env.str("DEVELOPMENT_BOT_TOKEN")  # Bot token
 ADMINS = env.list("ADMINS")  # adminlar ro'yxati
 IP = env.str("ip")  # Xosting ip manzili
+
+
+#PRODUCTION_API_TOKEN
+#DEVELOPMENT_BOT_TOKEN
