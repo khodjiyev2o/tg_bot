@@ -15,7 +15,7 @@ PHONE_NUM = r'^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$'
 
 
 
-@dp.message_handler(commands="registrasiya", state=None)
+@dp.message_handler(commands="Registrasiya", state=None)
 async def enter_name(message: types.Message):
     await message.answer("Ismingizni kiriting")
     await REGISTER.name.set()
