@@ -1,44 +1,84 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext,filters
 from loader import dp
-
+from states.register import REGISTER
 
 PHONE_NUM = r'^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$'
 #KOREAN_CARD = r'^9[0-9]{15}$'
 
 
+@dp.message_handler(commands="registrasiya", state=None)
+async def enter_test(message: types.Message):
+    await message.answer("Ismingizni kiriting")
+    await REGISTER.name.set()
 
-@dp.message_handler(commands="registrasiya")
-async def set_state(msg: types.Message, state: FSMContext):
-    """Foydalanuvchi registrasiya state ichida"""
-    username  = msg.from_user.full_name
-    text = (f"{username}!",
-            "Royhatdan utish uchun telefon raqamingizni kiriting!",
+
+@dp.message_handler(state=REGISTER.name)
+async def answer_name(message: types.Message, state: FSMContext):
+    name = message.text
+    await state.update_data(
+        {"name": name}
+    )
+    await message.answer("Isminigiz  muvaffaqiyatli  saqlandi!")
+    text = (f"{name}!",
+            "endi, telefon raqamingizni kiriting!",
             "Misol uchun: 010-9552-4141")
-    await msg.answer("\n".join(text))
+    await message.answer("\n".join(text))
     ##  moving to another state
-    await state.set_state('phone_number')
+    await REGISTER.phoneNum.set()
+
+
+    
     
 
-@dp.message_handler(filters.Regexp(PHONE_NUM),state='phone_number')
-async def regexp_phone(msg: types.Message, state: FSMContext):
-    await msg.answer("Telefon raqamingiz muvaffaqiyatli  saqlandi!")
+@dp.message_handler(filters.Regexp(PHONE_NUM),state=REGISTER.phoneNum)
+async def regexp_phone(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    name = data.get("name")
+    phoneNum = message.text
+    await state.update_data(
+        {"phoneNum": phoneNum}
+    )
+    await message.answer("Telefon raqamingiz muvaffaqiyatli  saqlandi!")
    
     ##  moving to another state 
-    await state.set_state('card_number')
-    text = (f"{msg.from_user.full_name}",
+
+    text = (f"{name}",
             "endi iltimos, Koreya plastik karta raqamingizni kiriting!",
-            "Misol uchun: 010-9552-4141")
-    await msg.answer("\n".join(text))
+            "Misol uchun: 123456789101112")
+    await message.answer("\n".join(text))
+    await REGISTER.cardNum.set()
 
 
 
-@dp.message_handler(state='card_number')
-async def state_example(msg: types.Message, state: FSMContext):
-    await msg.answer("Karta raqamingiz muvaffaqiyatli  saqlandi!")
-    await msg.answer(f"{msg.from_user.full_name}, royhatdan muvaffaqiyatli o'tkaniz bilan tabriklaymiz!")
+@dp.message_handler(state=REGISTER.cardNum)
+async def state_example(message: types.Message, state: FSMContext):
+    cardNum = message.text
+    await state.update_data(
+        {"cardNum": cardNum}
+    )
+
+    data = await state.get_data()
+    name = data.get("name")
+    await message.answer("Karta raqamingiz muvaffaqiyatli  saqlandi!")
+    await message.answer(f"{name}, royhatdan muvaffaqiyatli o'tkaniz bilan tabriklaymiz!")
+
+
+
+    # Ma`lumotlarni qayta o'qiymiz
+    data = await state.get_data()
+    name = data.get("name")
+    cardNum = data.get("cardNum")
+    phoneNum = data.get("phoneNum")
+
+    msg = "Quyidai ma`lumotlar qabul qilindi:\n"
+    msg += f"Ismingiz - {name}\n"
+    msg += f"Karta raqamingiz - {cardNum}\n"
+    msg += f"Telefon: - {phoneNum}"
+    await message.answer(msg)
     await state.finish()
     
+
 
 
 
