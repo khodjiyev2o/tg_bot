@@ -8,4 +8,4 @@ class REGISTER(StatesGroup):
     name = State() # ism
     phoneNum = State() # Tel raqami
     cardNum = State()
-    
+    bank_name = State()

@@ -1,14 +1,22 @@
 from aiogram import types
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext,filters
 from loader import dp
 from states.register import REGISTER
+from keyboards.default.bank_card import bank_card
 
 PHONE_NUM = r'^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$'
-#KOREAN_CARD = r'^9[0-9]{15}$'
+
+
+
+
+
+
+
 
 
 @dp.message_handler(commands="registrasiya", state=None)
-async def enter_test(message: types.Message):
+async def enter_name(message: types.Message):
     await message.answer("Ismingizni kiriting")
     await REGISTER.name.set()
 
@@ -28,8 +36,6 @@ async def answer_name(message: types.Message, state: FSMContext):
     await REGISTER.phoneNum.set()
 
 
-    
-    
 
 @dp.message_handler(filters.Regexp(PHONE_NUM),state=REGISTER.phoneNum)
 async def regexp_phone(message: types.Message, state: FSMContext):
@@ -42,12 +48,26 @@ async def regexp_phone(message: types.Message, state: FSMContext):
     await message.answer("Telefon raqamingiz muvaffaqiyatli  saqlandi!")
    
     ##  moving to another state 
+    await REGISTER.bank_name.set()
+    await message.answer("Endi, Bankni tanlang", reply_markup=bank_card)
+    
 
-    text = (f"{name}",
-            "endi iltimos, Koreya plastik karta raqamingizni kiriting!",
+@dp.message_handler(state=REGISTER.bank_name)
+async def show_bank_names(message: Message,state: FSMContext):
+    bank_name = message.text
+    await state.update_data(
+        {"bank_name":bank_name}
+    )
+    
+     ##  moving to another state 
+    data = await state.get_data()
+    name = data.get("name")
+    text = (f"{name},",
+            "endi iltimos, Koreya plastik karta raqamingizni  kiriting!",
             "Misol uchun: 123456789101112")
     await message.answer("\n".join(text))
     await REGISTER.cardNum.set()
+
 
 
 
@@ -70,10 +90,13 @@ async def state_example(message: types.Message, state: FSMContext):
     name = data.get("name")
     cardNum = data.get("cardNum")
     phoneNum = data.get("phoneNum")
+    bank_name = data.get("bank_name")
 
-    msg = "Quyidai ma`lumotlar qabul qilindi:\n"
+
+    msg = "Quyidagi ma`lumotlar qabul qilindi:\n"
     msg += f"Ismingiz - {name}\n"
     msg += f"Karta raqamingiz - {cardNum}\n"
+    msg += f"Bank nomi - {bank_name}\n"
     msg += f"Telefon: - {phoneNum}"
     await message.answer(msg)
     await state.finish()
