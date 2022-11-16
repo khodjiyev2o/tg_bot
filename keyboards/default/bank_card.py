@@ -34,10 +34,15 @@ cards = [
     'Kwangju Bank',
     'Jeonbuk Bank',
     'Shinhan Financial Group',
-    'Jeju Bank'
+    'Jeju Bank',
+     "🔙 Ortga",
 ]
 
 for x in cards:
   bank_card.add(KeyboardButton(x))
+
+
+
+
 
 
