@@ -3,6 +3,10 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 registration = ReplyKeyboardMarkup(
     keyboard = [
         [
+            KeyboardButton(text='👨‍💼Ish beruvchi'),
+            
+        ],
+        [
             KeyboardButton(text='📝Registrasiya'),
             
         ],
