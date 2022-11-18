@@ -6,7 +6,7 @@ from states.register import REGISTER
 from keyboards.default.bank_card import bank_card
 from keyboards.default.next_back import back
 from keyboards.default.register_start import registration
-
+from filters.private_chat import IsPrivate
 
 PHONE_NUM = r'^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$'
 
@@ -14,7 +14,7 @@ BANK_CARD = r"^[0-9]*$"
 
 
 
-@dp.message_handler(text_contains="Ortga", state=REGISTER)
+@dp.message_handler(IsPrivate(),text_contains="Ortga", state=REGISTER)
 async def enter_name(message: types.Message,state:FSMContext):
   username  = message.from_user.full_name
   text = (f"Salom, {username}!",
@@ -24,13 +24,13 @@ async def enter_name(message: types.Message,state:FSMContext):
   await message.answer("\n".join(text),reply_markup=registration)
 
 
-@dp.message_handler(text_contains="Registrasiya", state=None)
+@dp.message_handler(IsPrivate(),text_contains="Registrasiya", state=None)
 async def enter_name(message: types.Message):
     await message.answer("Ismingizni kiriting",reply_markup=back)
     await REGISTER.name.set()
 
 
-@dp.message_handler(state=REGISTER.name)
+@dp.message_handler(IsPrivate(),state=REGISTER.name)
 async def answer_name(message: types.Message, state: FSMContext):
     name = message.text
     await state.update_data(
@@ -45,7 +45,7 @@ async def answer_name(message: types.Message, state: FSMContext):
     await REGISTER.phoneNum.set()
 
 
-@dp.message_handler(filters.Regexp(PHONE_NUM),state=REGISTER.phoneNum)
+@dp.message_handler(IsPrivate(),filters.Regexp(PHONE_NUM),state=REGISTER.phoneNum)
 async def regexp_phone(message: types.Message, state: FSMContext):
     data = await state.get_data()
     name = data.get("name")
@@ -60,7 +60,7 @@ async def regexp_phone(message: types.Message, state: FSMContext):
     await message.answer("Endi, Bankni tanlang", reply_markup=bank_card)
     
 
-@dp.message_handler(state=REGISTER.bank_name)
+@dp.message_handler(IsPrivate(),state=REGISTER.bank_name)
 async def show_bank_names(message: Message,state: FSMContext):
     bank_name = message.text
     await state.update_data(
