@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 from keyboards.default.register_start import registration
+from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.inline.register import registration as registr_inline
 from loader import dp, db, bot 
 from filters.private_chat import IsPrivate
@@ -9,6 +10,7 @@ from data.config import ADMINS
 
 @dp.message_handler(IsPrivate(),CommandStart())
 async def bot_start(message: types.Message): 
+  
     username  = message.from_user.full_name
     try:
 
@@ -27,12 +29,12 @@ async def bot_start(message: types.Message):
         await bot.send_message(chat_id=ADMINS[0], text=msg)
 
 
-    text = (f"Salom, {username}!",
-            "📦Tekpe botga xush kelibsiz!",
-            "🤖Bot ni ishga tushirish uchun registrasiyadan utishingiz kerak!")
-
-    await message.answer("\n".join(text),reply_markup=registr_inline)
+    text = f"Xush kelibsiz, {username}!"
+           
+    registr_text = "🤖Bot ni ishga tushirish uchun registrasiyadan utishingiz kerak!"
     
+    await bot.send_message(chat_id=message.from_user.id, text=text,reply_markup=registration)
+    await message.answer(text=registr_text,reply_markup=registr_inline)
     # ADMINGA xabar beramiz
     
     

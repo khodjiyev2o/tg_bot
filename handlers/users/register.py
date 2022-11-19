@@ -19,7 +19,7 @@ BANK_CARD = r"^[0-9]*$"
 @dp.message_handler(IsPrivate(),text_contains="Ortga", state=REGISTER)
 async def enter_name(message: types.Message,state:FSMContext):
   username  = message.from_user.full_name
-  text = (f"Salom, {username}!",
+  text = (f"Xush kelibsiz, {username}!",
             "📦Tekpe botga xush kelibsiz!",
             "🤖Bot ni ishga tushirish uchun registrasiyadan utishingiz kerak!")
   await state.finish()
