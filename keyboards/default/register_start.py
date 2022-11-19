@@ -7,10 +7,6 @@ registration = ReplyKeyboardMarkup(
             
         ],
         [
-            KeyboardButton(text='📝Registrasiya'),
-            
-        ],
-        [
             KeyboardButton(text='📄Qollanma'),
         ],
         [

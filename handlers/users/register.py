@@ -1,12 +1,14 @@
 from aiogram import types
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove,CallbackQuery
 from aiogram.dispatcher import FSMContext,filters
-from loader import dp
+from loader import dp,bot
 from states.register import REGISTER
 from keyboards.default.bank_card import bank_card
 from keyboards.default.next_back import back
 from keyboards.default.register_start import registration
+from keyboards.inline.register import registration as registr_inline
 from filters.private_chat import IsPrivate
+
 
 PHONE_NUM = r'^[0-9]{3}-([0-9]{3}|[0-9]{4})-[0-9]{4}$'
 
@@ -21,12 +23,13 @@ async def enter_name(message: types.Message,state:FSMContext):
             "📦Tekpe botga xush kelibsiz!",
             "🤖Bot ni ishga tushirish uchun registrasiyadan utishingiz kerak!")
   await state.finish()
-  await message.answer("\n".join(text),reply_markup=registration)
+  await message.answer("\n".join(text),reply_markup=registr_inline)
 
 
-@dp.message_handler(IsPrivate(),text_contains="Registrasiya", state=None)
-async def enter_name(message: types.Message):
-    await message.answer("Ismingizni kiriting",reply_markup=back)
+
+@dp.callback_query_handler(text="registrasiya")
+async def enter_name(call: CallbackQuery,state:FSMContext):
+    await bot.send_message(text="Ismingizni kiriting",reply_markup=back,chat_id=call.from_user.id)
     await REGISTER.name.set()
 
 

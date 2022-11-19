@@ -1,0 +1,23 @@
+version: '3'
+services:
+  postgres:
+    platform: linux/amd64
+    image: postgres:latest
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    container_name: postgres
+    networks:
+      - practise
+
+volumes:
+  postgresql-data:
+
+networks:
+  practise:
