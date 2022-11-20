@@ -52,9 +52,7 @@ async def list_companies_by_employer(callback:CallbackQuery, employer_id, **kwar
 # @dp.message_handler(IsPrivate(),text_contains="Ortga", state=REGISTER)
 # async def enter_name(message: types.Message,state:FSMContext):
 
-@dp.callback_query_handler()
-async def reconsider_decision(callback:CallbackQuery,state:FSMContext):
-    await callback.message.edit_text(text="Haqiqatdanham yozdirilmoqchimisz?", reply_markup=yes_no.yes_no)
+
     
 
 
@@ -93,3 +91,16 @@ async def navigate(call: CallbackQuery, callback_data: dict):
     await current_level_function(
         call, employer_id=employer_id, company=company
     )
+
+
+@dp.callback_query_handler()
+async def reconsider_decision(callback:CallbackQuery,state:FSMContext):
+    await callback.message.edit_text(text="Haqiqatdanham yozdirilmoqchimisz?", reply_markup=yes_no.yes_no)
+    await Employer.company.state()
+
+
+
+@dp.callback_query_handler(text="xa")
+async def reconsider_decision(callback:CallbackQuery,state:FSMContext):
+    await callback.message.edit_text(text="Siz yozdirildiz!", reply_markup=yes_no.yes_no)
+    await Employer.company.state()    
