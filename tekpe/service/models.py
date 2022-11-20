@@ -17,13 +17,20 @@ class User(models.Model):
             return f"{self.id} - @{self.username}"
         else:
             return f"{self.id} - {self.full_name}"
+class Employer(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    
+
+    def __str__(self):
+        return f"№{self.id} - {self.user_id}"
 
 class Company(models.Model):
     id = models.AutoField(primary_key=True)
     companyname = models.CharField(verbose_name="Kompaniya nomi", max_length=50)
     price = models.DecimalField(verbose_name="Narx", decimal_places=2, max_digits=8)
-    description = models.TextField(verbose_name="Kompaniya haqida", max_length=3000, null=True)
-
+    description = models.TextField(verbose_name="Kompaniya haqida", max_length=3000,blank=True,default="None")
+    employer_name = models.ForeignKey(Employer,on_delete=models.CASCADE,verbose_name="Ish beruvchi",max_length=20)    
 
     def __str__(self):
         return f"№{self.id} - {self.companyname}"
@@ -40,13 +47,7 @@ class Worker(models.Model):
     def __str__(self):
         return str(self.name)
 
-class Employer(models.Model):
-    id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    company = models.ManyToManyField(Company)
 
-    def __str__(self):
-        return f"№{self.id} - {self.user_id}"
 
 
 class Applicant(models.Model):

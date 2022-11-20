@@ -83,3 +83,46 @@ class Database:
 
     async def drop_users(self):
         await self.execute("DROP TABLE service_user", execute=True)
+
+   ## Ish beruvchilar uchun
+
+    async def get_employers(self):
+        sql = "SELECT * FROM service_employer"
+        return await self.execute(sql, fetch=True)
+
+    async def get_companies_by_employer(self, employer_id):
+        sql = f"""SELECT * FROM service_company WHERE service_company.employer_name_id='{employer_id}' """
+        return await self.execute(sql, fetch=True)
+
+    async def count_employers(self):
+        sql = "SELECT COUNT(*) FROM service_employer"
+        return await self.execute(sql, fetchval=True)
+
+    async def get_all_companies(self):
+        sql = f"SELECT * FROM service_company'"
+        return await self.execute(sql, fetch=True)
+
+    async def count_companies_by_employer(self,employer_id):
+        sql = f"SELECT COUNT(*) FROM service_company WHERE service_company.employer_name_id='{employer_id}'"
+        return await self.execute(sql, fetchval=True)
+
+    async def drop_employer(self):
+        await self.execute("DROP TABLE service_employer", execute=True)
+
+
+
+
+
+    ##  Applicant uchun 
+    # user_id 
+    # company
+    # employer
+    async def create_applicant(self,user_id,company,employer):
+        sql = "INSERT INTO service_applicant (user_id, company, employer) VALUES($1, $2, $3) returning *"
+        return await self.execute(sql, user_id, company, employer, fetchrow=True)
+
+    async def get_all_applicants_by_employer(self,employer_id):
+        sql = f"SELECT COUNT(*) FROM service_applicant WHERE service_applicant.employer_id='{employer_id}'"
+        return await self.execute(sql, fetchval=True)
+
+        
